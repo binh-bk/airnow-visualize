@@ -5,16 +5,23 @@ import pandas as pd
 import dash 
 import dash_core_components as dcc 
 import dash_html_components as html 
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px 
+import plotly.io as pio
 from datetime import datetime as dt
 import re
 import numpy as np
 from dateutil import parser
 import os
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+pio.templates.default = "plotly_dark"
+# external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = dash.Dash(
+	__name__, 
+	# external_stylesheets=external_stylesheets,
+	 meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}])
+app.config["suppress_callback_exceptions"] = True
+server = app.server
 
 url = 'https://www.dosairnowdata.org/dos/AllPostsHistorical.json'
 r = urlopen(url)
@@ -27,44 +34,61 @@ sites = list(json_.keys())
 dfraw = pd.DataFrame()
 
 app.layout = html.Div([
+	html.Div([
+	 	html.Img(id="logo", src=app.get_asset_url("favicon.png"), style={'width': 100, 'height': 'auto'}),
+	 	html.H2("A Dash App visualizing Airnow.Gov data"),
 
-	dcc.Dropdown(
+		]),
+	html.Hr(),
+	html.Div([
+		html.H3('Inputs'),
+		dcc.Dropdown(
 		id='select_site',
+		# n_clicks=0,
 		options=[{'label': i, 'value': i} for i in sites],
 		value='Hanoi',
 		),
-	html.Hr(),
-	dcc.RadioItems(id='select_file'),
-	html.Hr(),
-	html.Div(id='target_file', children='csvfile', title='Link'),
-	html.Hr(),
-	html.Label('Quality Tags'),
-    dcc.Checklist(id='quality-tags',
-    	options= [
-            {'label': 'Valid', 'value': 'Valid'},
-        ],
-        value=['Valid'],
-    ),
+		dcc.RadioItems(id='select_file'),
+		html.Hr(),
+		html.Div(id='target_file', children='csvfile', title='Link'),
+		html.Hr(),
+		html.Label('Quality Tags'),
+	    dcc.Checklist(id='quality-tags',
+	    	options= [
+	            {'label': 'Valid', 'value': 'Valid'},
+	        ],
+	        value=['Valid'],
+	    ),
 
-    html.Label('Select Date Range'),
-	dcc.DatePickerRange(
-		id='date-picker',
-		min_date_allowed = datetime.date(2015,1,1),
-		max_date_allowed = datetime.date(2020,7,30),
-		initial_visible_month=datetime.date(2020, 3, 1),
-		start_date = datetime.date(2019,1,1),
-		end_date = datetime.date(2020,1,1),
-		display_format='MMM Do, YYYY',
-		),
-	html.Div(id='output-date-picker'),
-	html.Hr(),
-	html.Div(id='specs-pandas'),
-	html.Hr(),
-	dcc.Graph(id='pandas-graphic'),
-	html.Hr(),
-	dcc.Graph(id='pandas-graphic-daily'),
-
-	])
+	    html.Label('Select Date Range'),
+		dcc.DatePickerRange(
+			id='date-picker',
+			min_date_allowed = datetime.date(2015,1,1),
+			max_date_allowed = datetime.date(2020,7,30),
+			initial_visible_month=datetime.date(2020, 3, 1),
+			start_date = datetime.date(2019,1,1),
+			end_date = datetime.date(2020,1,1),
+			display_format='MMM Do, YYYY',
+			),
+		html.Div(
+			id='output-date-picker'),
+		html.Hr(),
+		html.Div(id='specs-pandas'),
+		html.Button(id='submit-button-state', n_clicks=0, children='CHART',
+			style={
+				'color': 'crimson',
+			}),
+		html.Hr(),
+		]),
+	html.Div([
+		dcc.Graph(id='pandas-graphic'),
+		html.Hr(),
+		dcc.Graph(id='pandas-graphic-daily')
+		]),
+	],
+	style={
+	'backgroundColor': '#1e2130', 
+	'color': 'white'},)
 
 @app.callback(
 	Output(component_id='select_file', component_property='options'),
@@ -78,10 +102,11 @@ def select_file(selected_city):
 @app.callback(
 	Output(component_id='target_file', component_property='children'),
 	[Input(component_id='select_site', component_property='value'),
-	Input(component_id='select_file', component_property='value')])
+	Input(component_id='select_file', component_property='value'),
+	])
 def select_csv(selected_city, target_csv):
 	if selected_city is None or target_csv is None:
-		return "Missing inputs"
+		return "No file selected"
 	output = json_[selected_city]['monitors'][0]['files'][target_csv]
 	return '{}'.format(output)
 
@@ -110,9 +135,9 @@ def update_option(target_file):
 
 
 @app.callback(
-    dash.dependencies.Output('output-date-picker', 'children'),
-    [dash.dependencies.Input('date-picker', 'start_date'),
-     dash.dependencies.Input('date-picker', 'end_date')])
+    Output('output-date-picker', 'children'),
+    [Input('date-picker', 'start_date'),
+    Input('date-picker', 'end_date')])
 def update_output(start_date, end_date):
     string_prefix = 'You have selected: '
     if start_date is not None:
@@ -129,10 +154,10 @@ def update_output(start_date, end_date):
         return string_prefix
 
 @app.callback(
-    dash.dependencies.Output('specs-pandas', 'children'),
-    [dash.dependencies.Input('target_file', 'children'),
-    dash.dependencies.Input('date-picker', 'start_date'),
-    dash.dependencies.Input('date-picker', 'end_date')])
+    Output('specs-pandas', 'children'),
+    [Input('target_file', 'children'),
+    Input('date-picker', 'start_date'),
+    Input('date-picker', 'end_date')])
 def display_info(target_file, start_date, end_date):
 	if any([target_file, start_date, end_date]) is None:
 		return 'Waiting for the input'
@@ -140,37 +165,59 @@ def display_info(target_file, start_date, end_date):
 
 
 @app.callback(
-    [dash.dependencies.Output('pandas-graphic', 'figure'),
-    dash.dependencies.Output('pandas-graphic-daily', 'figure')],
-    [dash.dependencies.Input('target_file', 'children'),
-    dash.dependencies.Input('date-picker', 'start_date'),
-    dash.dependencies.Input('date-picker', 'end_date'),
-    dash.dependencies.Input('quality-tags', 'value')])
-def display_graph(target_file, start_date, end_date, value):
+    [Output('pandas-graphic', 'figure'),
+    Output('pandas-graphic-daily', 'figure')],
+    [Input('submit-button-state', 'n_clicks')],
+    [State('target_file', 'children'),
+    State('date-picker', 'start_date'),
+    State('date-picker', 'end_date'),
+    State('quality-tags', 'value')])
+def display_graph(n_clicks, target_file, start_date, end_date, value):
 	if any([target_file, start_date, end_date]) is None:
 		return 'Waiting for the input'
 	start = parser.parse(start_date)
 	end = parser.parse(end_date)
 	global dfraw
 	df = dfraw.copy(deep=True)
-	
 	df = df[df['QC Name'].isin(value)][['Raw Conc.']]
-	# df.index = pd.to_datetime(df.index)
-	
-	print(df.head(3))
-	print(f'start {start} type {type(start)}, end: {end}')
-
 	df = df[(df.index >= start) & (df.index <= end)]
 	df2 = df.resample('1D').mean()
-
-	print(f'filtered: {len(df)}')
-	print('-'*40)
-	print(df.head())
 	fig = px.line(x=df.index, y=df[df.columns[0]])
 	fig_daily = px.line(x=df2.index, y=df2[df2.columns[0]])
-
 	return fig, fig_daily
+
+
+# @app.callback(
+#     [Output('pandas-graphic', 'figure'),
+#     Output('pandas-graphic-daily', 'figure')],
+#     [Input('target_file', 'children'),
+#     Input('date-picker', 'start_date'),
+#     Input('date-picker', 'end_date'),
+#     Input('quality-tags', 'value')])
+# def aqi_segments(target_file, start_date, end_date, value):
+# 	if any([target_file, start_date, end_date]) is None:
+# 		return 'Waiting for the input'
+# 	start = parser.parse(start_date)
+# 	end = parser.parse(end_date)
+# 	global dfraw
+# 	df = dfraw.copy(deep=True)
 	
+# 	df = df[df['QC Name'].isin(value)][['Raw Conc.']]
+# 	# df.index = pd.to_datetime(df.index)
+	
+# 	print(df.head(3))
+# 	print(f'start {start} type {type(start)}, end: {end}')
+
+# 	df = df[(df.index >= start) & (df.index <= end)]
+# 	df2 = df.resample('1D').mean()
+
+# 	print(f'filtered: {len(df)}')
+# 	print('-'*40)
+# 	print(df.head())
+# 	fig = px.line(x=df.index, y=df[df.columns[0]])
+# 	fig_daily = px.line(x=df2.index, y=df2[df2.columns[0]])
+
+# 	return fig, fig_daily
 
 if __name__ == '__main__':
 	app.run_server(debug=True)
