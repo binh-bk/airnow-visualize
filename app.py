@@ -187,39 +187,6 @@ def display_graph(n_clicks, target_file, start_date, end_date, value):
 	fig_daily = px.line(x=df2.index, y=df2[df2.columns[0]])
 	return fig, fig_daily
 
-
-# @app.callback(
-#     [Output('pandas-graphic', 'figure'),
-#     Output('pandas-graphic-daily', 'figure')],
-#     [Input('target_file', 'children'),
-#     Input('date-picker', 'start_date'),
-#     Input('date-picker', 'end_date'),
-#     Input('quality-tags', 'value')])
-# def aqi_segments(target_file, start_date, end_date, value):
-# 	if any([target_file, start_date, end_date]) is None:
-# 		return 'Waiting for the input'
-# 	start = parser.parse(start_date)
-# 	end = parser.parse(end_date)
-# 	global dfraw
-# 	df = dfraw.copy(deep=True)
-	
-# 	df = df[df['QC Name'].isin(value)][['Raw Conc.']]
-# 	# df.index = pd.to_datetime(df.index)
-	
-# 	print(df.head(3))
-# 	print(f'start {start} type {type(start)}, end: {end}')
-
-# 	df = df[(df.index >= start) & (df.index <= end)]
-# 	df2 = df.resample('1D').mean()
-
-# 	print(f'filtered: {len(df)}')
-# 	print('-'*40)
-# 	print(df.head())
-# 	fig = px.line(x=df.index, y=df[df.columns[0]])
-# 	fig_daily = px.line(x=df2.index, y=df2[df2.columns[0]])
-
-# 	return fig, fig_daily
-
 if __name__ == '__main__':
 	app.run_server(debug=True)
 
