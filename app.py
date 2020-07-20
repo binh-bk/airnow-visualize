@@ -21,6 +21,7 @@ app = dash.Dash(
 	# external_stylesheets=external_stylesheets,
 	 meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}])
 app.config["suppress_callback_exceptions"] = True
+
 server = app.server
 
 url = 'https://www.dosairnowdata.org/dos/AllPostsHistorical.json'
