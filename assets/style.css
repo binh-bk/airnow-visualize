@@ -111,6 +111,7 @@
   html {
     font-size: 62.5%; }
   body {
+    max-width: 1920px;
     font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
     line-height: 1.6;
     font-weight: 400;
@@ -860,4 +861,16 @@ summary::-webkit-details-marker {
 
 ._dash-undo-redo {
   display: none;
+}
+
+
+/*Experiment class, id and such */
+
+#big-app-container {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1 6rem;
+  margin: 1 1rem;
 }
