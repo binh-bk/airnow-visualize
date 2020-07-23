@@ -4,7 +4,7 @@ A Dash App using Plotly and Python (and others) to visualize data from Airnow.go
 ## install
 - requirement: `python3.6 or later`
 ```
-git clone https://github.com/binh-bk/airnow-visualize
+git clone https://github.com/binh-bk/airnow-visualize.git
 cd airnow-visualize
 python3 -m venv venv
 source venv/bin/activate
