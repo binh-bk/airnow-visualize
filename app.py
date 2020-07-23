@@ -20,7 +20,7 @@ app = dash.Dash(
 	__name__, 
 	external_stylesheets=[dbc.themes.BOOTSTRAP],
 	meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}])
-# app.config["suppress_callback_exceptions"] = True
+app.config["suppress_callback_exceptions"] = True
 
 server = app.server
 
@@ -46,52 +46,41 @@ def generate_header():
 				style={
 				'width': 30, 
 				'height': 30,
-				'pading': '2px 2px'
+				'margin': '2px 10px'
 				}),
-			html.H2(
+			html.H3(
 				"A Dash App visualizing Airnow.gov data",
 				style={
-					'padding': '5px 5px',
-					'margin': '0px 0px',
+					'margin': '1px 1px',
 					'text': 'center',
-					'color': 'blue',
+					'color': 'skyblue',
 					}
 				)],
 		style={
 			'width': '100%',
-			'padding': '2px 2px',
+			'padding': '1px 1px',
 			'display': 'flex',
-			'flex-direction': 'row-reverse',
 			'flex-wrap': 'wrap',
-			'align-items': 'center',
+			'justify-content': 'center',
+			# 'align-items': 'center',
 			},
 		)
 def generate_footer():
 	return html.Div(
 		children=[
-			html.Img(
-				src=app.get_asset_url("favicon.png"), 
+			html.P(
+				"2020, Binh Nguyen",
 				style={
-				'width': 30, 
-				'height': 30,
-				'pading': '2px 2px'
-				}),
-			html.H2(
-				"A Dash App visualizing Airnow.gov data",
-				style={
-					'padding': '5px 5px',
-					'margin': '0px 0px',
+					'padding': '1px 1px',
 					'text': 'center',
-					'color': 'blue',
+					'color': 'white',
+					'fontsize': '10px',
+					'text-align': 'center',
 					}
 				)],
 		style={
 			'width': '100%',
-			'padding': '2px 2px',
-			'display': 'flex',
-			'flex-direction': 'row-reverse',
-			'flex-wrap': 'wrap',
-			'align-items': 'center',
+			# 'text-align': 'center',
 			},
 		)
 def airnow_select():
@@ -127,11 +116,21 @@ def airnow_select():
 			end_date = datetime.date(2020,1,1),
 			display_format='MMM Do, YYYY',
 			),
-		html.Hr(),
-		html.Div(id='specs-pandas'),
-		html.Button(id='submit-button-state', n_clicks=0, children='CHART',
+		html.Hr(style={'margin': '10px 10px'}),
+		# html.Div(id='specs-pandas'),
+		html.Div([
+			html.Button(id='submit-button-state', n_clicks=0, 
+			children='CHART',
+			title='Refesh and chart data',
+				style={
+					'font-size': '16px',
+					'background-color': 'gray',
+					'color': 'maroon',
+					'padding': '5px 20px 20px 20px',
+				}),
+			],
 			style={
-				'color': 'crimson',
+				'align-items': 'center',
 			}),
 		],
 		style={
@@ -147,23 +146,20 @@ def generate_input():
 		style={
 			'width': '50%',
 			'height': '90%',
-			'border': 'solid white 1px',
+			# 'border': 'solid blue 1px',
 			'display': 'flex',
 			'align-items': 'flex-start',
 			'flex-direction': 'column',
-			'padding': '2px 2px',
+			'padding': '5px 5px',
 		})
 
 def summary_tab():
 	return html.Div(
 		children=[
-			dcc.Graph(id='hist-graph'),
 			dcc.Graph(id='pie-graph'),
+			dcc.Graph(id='hist-graph'),
 			],
 		style={
-			# 'width': '80%',
-			# 'height': '60%',
-			'border': 'solid white 2px',
 			'display': 'flex',
 			'align-items': 'flex-start',
 			})
@@ -174,30 +170,9 @@ def graph_tab():
 			dcc.Graph(id='pandas-graphic-daily'),
 			],
 		style={
-			# 'width': '80%',
-			# 'height': '40%',
-			'border': 'solid white 2px',
 			'display': 'flex',
 			'align-items': 'flex-start',
 		})
-
-
-def generate_tab(head_str='Example Tab', class_=None):
-	return 	html.Div(
-		# className='container',
-		children=[
-			html.H2(head_str),
-			html.Img(
-				src=app.get_asset_url("favicon.png"), 
-				style={'width': 60, 'height': 60}
-				),
-		 	html.H2("A Dash App visualizing Airnow.gov data"),
-		 	html.P(children="The app is under developing, and the layout is not in place. Just yet!\
-		 					The app is under developing, and the layout is not in place. Just yet!\
-		 					The app is under developing, and the layout is not in place. Just yet!\
-		 					The app is under developing, and the layout is not in place. Just yet!, and to make the like abit longer"),
-			],)
-
 
 
 app.layout = html.Div(
@@ -207,26 +182,28 @@ app.layout = html.Div(
 		html.Div(
 			style={
 			'width': '100%',
-			'border': 'solid white 2px',
-			'margin': '2px 2px',
+			'border': 'solid white 1px',
 			}),
 		html.Div([
 			generate_input(),
 			html.Div(
 				id='main-display',
 				children=[
-					summary_tab(),
 					graph_tab(),
+					summary_tab(),
 					],
 				style={
-					# 'heigh': '960px',
 					'display': 'flex',
 					'flex-direction': 'column',
+					'justify-content': 'space-between',
 					}),
 			],
 			style={
 				'display': 'flex',
 				'flex-direction': 'row',
+				# 'flex-wrap': 'wrap',
+				# 'justify-content': 'space-between',
+				# 'border': 'solid purple 1px',
 				}
 
 			),
@@ -234,10 +211,9 @@ app.layout = html.Div(
 			id='hl-near-bottom',
 			style={
 				'width': '100%',
-				'border': 'solid red 2px',
-				'margin': '2px 2px',
-				'display': 'flex',
-				'flex-direction': 'row',
+				'border': 'solid gray 1px',
+				# 'display': 'flex',
+				# 'flex-direction': 'row',
 				}),
 		generate_footer(),
 		],
@@ -246,80 +222,6 @@ app.layout = html.Div(
 		}
 	)
 
-
-# children=[
-# 	html.Div(
-# 		className='container',
-# 		children=[
-# 			html.Img(src=app.get_asset_url("favicon.png"), 
-# 				style={'width': 60, 'height': 'auto'}
-# 				),
-# 		 	html.H2("A Dash App visualizing Airnow.gov data"),
-# 		 	html.P(children="The app is under developing, and the layout is not in place. Just yet!")
-# 			]),
-# 			html.Div(
-# 				className='columns',
-# 				children=[
-# 				generate_tab(head_str='Second Tab'),
-# 				generate_tab(head_str='Third Tab'),
-# 				]),
-# 			html.Hr(),
-# 			html.Hr(),
-# 			generate_tab(head_str='Fourth Tab')
-# ],
-
-# html.Div([
-
-# 	html.Hr(),
-# 	html.Div([
-# 		html.H3('Inputs'),
-# 		dcc.Dropdown(
-# 		id='select_site',
-# 		# n_clicks=0,
-# 		options=[{'label': i, 'value': i} for i in sites],
-# 		value='Hanoi',
-# 		),
-# 		dcc.RadioItems(id='select_file'),
-# 		html.Hr(),
-# 		# html.Div(id='target_file', children='csvfile', title='Link'),
-# 		# html.Hr(),
-# 		html.Label('Quality Tags'),
-# 	    dcc.Checklist(id='quality-tags',
-# 	    	options= [
-# 	            {'label': 'Valid', 'value': 'Valid'},
-# 	        ],
-# 	        value=['Valid'],
-# 	    ),
-# 	    html.Hr(),
-# 	    html.Label('Select Date Range'),
-# 		dcc.DatePickerRange(
-# 			id='date-picker',
-# 			min_date_allowed = datetime.date(2015,1,1),
-# 			max_date_allowed = datetime.date(2020,7,30),
-# 			initial_visible_month=datetime.date(2020, 3, 1),
-# 			start_date = datetime.date(2019,1,1),
-# 			end_date = datetime.date(2020,1,1),
-# 			display_format='MMM Do, YYYY',
-# 			),
-# 		# html.Div(
-# 		# 	id='output-date-picker'),
-# 		html.Hr(),
-# 		# html.Div(id='specs-pandas'),
-# 		html.Button(id='submit-button-state', n_clicks=0, children='CHART',
-# 			style={
-# 				'color': 'crimson',
-# 			}),
-# 		html.Hr(),
-# 		]),
-# 	html.Div([
-# 		dcc.Graph(id='pandas-graphic'),
-# 		html.Hr(),
-# 		dcc.Graph(id='pandas-graphic-daily')
-# 		]),
-# 	],
-# 	style={
-# 	'backgroundColor': '#1e2130', 
-# 	'color': 'white'},)
 
 @app.callback(
 	Output(component_id='select_file', component_property='options'),
@@ -386,20 +288,6 @@ def update_output(start_date, end_date):
     else:
         return string_prefix
 
-# @app.callback(
-#     Output('specs-pandas', 'children'),
-#     [Input('target_file', 'href'),
-#     Input('date-picker', 'start_date'),
-#     Input('date-picker', 'end_date')])
-# def display_info(target_file, start_date, end_date):
-# 	if any([target_file, start_date, end_date]) is None:
-# 		return 'Waiting for the input'
-# 	info = f'start: {start_date}, end: {end_date} with file {target_file}'
-# 	print(info)
-# 	return info
-		# dcc.Graph(id='hist-graph'),
-		# 	dcc.Graph(id='pie-graph'),
-
 @app.callback(
     [Output('pandas-graphic', 'figure'),
     Output('pandas-graphic-daily', 'figure'),
@@ -424,18 +312,21 @@ def display_graph(n_clicks, target_file, start_date, end_date, value):
 	fig = px.line(df, y='Raw Conc.', title='Raw PM2.5 Conc.')
 	fig_daily = px.line(df2, y='Raw Conc.', title='Daily PM2.5 Conc.')
 	dist = px.histogram(df, x='Raw Conc.')
-	dfp = df.groupby('AQI Category').count()
+	
 	colormap = {'Good': 'green',
 				'Moderate': 'yellow',
 				'Unhealthy for Sensitive Groups': 'orange',
 				'Unhealthy': 'red',
 				'Very Unhealthy': 'purple',
 				'Hazardous': 'maroon'}
-	pie = px.pie(
-		dfp, values= 'Raw Conc.', 
-		names=dfp.index,
-		color_discrete_map=colormap)
-	print(dfp)
+
+	dfp = df.groupby('AQI Category').count()
+	dfp = dfp.reindex(list(colormap.keys()))
+	pie = px.pie(dfp, 
+			values= 'Raw Conc.', 
+			names=list(dfp.index),
+			color='Raw Conc.',
+			color_discrete_sequence= list(colormap.values()),)
 	return fig, fig_daily, dist, pie
 
 if __name__ == '__main__':
