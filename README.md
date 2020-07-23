@@ -15,4 +15,6 @@ the app should boot up, by default, the local address is `localhost:8000`
 
 ## screenshot
 
-visualize archived data from airnow.gov
+  <p align="center">
+    <img src="img/screenshot.png"/>
+  </p
