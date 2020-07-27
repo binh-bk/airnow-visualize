@@ -44,10 +44,10 @@ sites, json_ = get_json()
 def generate_header():
 	return html.Div(
 		children=[
-			# html.Img(
-			# 	src=app.get_asset_url("favicon.png"), 
-			# 	className='logo-app',
-			# 	),
+			html.Img(
+				src=app.get_asset_url("favicon.png"), 
+				className='logo-app',
+				),
 			html.H3(
 				"A Dash App visualizing Airnow.gov data",
 				className='tag-line',
