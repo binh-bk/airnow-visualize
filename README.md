@@ -17,6 +17,11 @@ the app should boot up, by default, the local address is `localhost:8000`
 - to run the app in the background `gunicorn app:server &`
 - to run the app in a server with two workers `gunicorn app:server --workers 2 --bind 0.0.0.0:8000`
 
+## refresh local file
+- by default, file will be donwloaded and saved to a local folder call `csv`
+- an **boolean** switch is added, and when activte showing `cherry red` background, the newest CSV file will be downloaded, and replaces the existed file
+- unless you want to most recent data (updated by monthly in `YTD`, and daily in `MTD`), using local files should be fine, and much faster
+
 ## screenshot
 
   <p align="center">
