@@ -19,7 +19,7 @@ the app should boot up, by default, the local address is `localhost:8000`
 
 ## refresh local file
 - by default, file will be donwloaded and saved to a local folder call `csv`
-- an **boolean** switch is added, and when activte showing `cherry red` background, the newest CSV file will be downloaded, and replaces the existed file
+- an **boolean** switch is added, and when activated showing `cherry red` background, the newest CSV file will be downloaded, and replaces the existed file
 - unless you want to most recent data (updated by monthly in `YTD`, and daily in `MTD`), using local files should be fine, and much faster
 
 ## Also, a free deployment on Heroku:
