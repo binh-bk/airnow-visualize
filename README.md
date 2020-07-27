@@ -22,6 +22,8 @@ the app should boot up, by default, the local address is `localhost:8000`
 - an **boolean** switch is added, and when activte showing `cherry red` background, the newest CSV file will be downloaded, and replaces the existed file
 - unless you want to most recent data (updated by monthly in `YTD`, and daily in `MTD`), using local files should be fine, and much faster
 
+## Also, a free deloyment on Heroku:
+[https://airnow-visualize.herokuapp.com](https://airnow-visualize.herokuapp.com/)
 ## screenshot
 
   <p align="center">
