@@ -254,8 +254,8 @@ def display_graph(n_clicks, target_file, start_date, end_date, value):
 	df = df[df['QC Name'].isin(value)][['Raw Conc.', 'AQI Category']]
 	df = df[(df.index >= start) & (df.index <= end)]
 	df2 = df.resample('1D').mean()
-	fig = px.line(df, y='Raw Conc.', title='Raw PM2.5 Conc.')
-	fig_daily = px.line(df2, y='Raw Conc.', title='Daily PM2.5 Conc.')
+	fig = px.line(df, y='Raw Conc.', title='Raw Conc.')
+	fig_daily = px.line(df2, y='Raw Conc.', title='Daily Conc.')
 	dist = px.histogram(df, x='Raw Conc.')
 	
 	colormap = {'Good': 'green',
