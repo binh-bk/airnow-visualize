@@ -23,8 +23,6 @@ app = dash.Dash(
 app.config["suppress_callback_exceptions"] = True
 
 server = app.server
-
-
 dfraw = pd.DataFrame() # empty DataFrame
 
 def get_json():
@@ -43,45 +41,21 @@ def generate_header():
 		children=[
 			html.Img(
 				src=app.get_asset_url("favicon.png"), 
-				style={
-				'width': 30, 
-				'height': 30,
-				'margin': '2px 10px'
-				}),
+				className='logo-app',
+				),
 			html.H3(
 				"A Dash App visualizing Airnow.gov data",
-				style={
-					'margin': '1px 1px',
-					'text': 'center',
-					'color': 'skyblue',
-					}
+				className='tag-line',
 				)],
-		style={
-			'width': '100%',
-			'padding': '1px 1px',
-			'display': 'flex',
-			'flex-wrap': 'wrap',
-			'justify-content': 'center',
-			# 'align-items': 'center',
-			},
+		className = 'header-tab',
 		)
 def generate_footer():
 	return html.Div(
 		children=[
 			html.P(
 				"2020, Binh Nguyen",
-				style={
-					'padding': '1px 1px',
-					'text': 'center',
-					'color': 'white',
-					'fontsize': '10px',
-					'text-align': 'center',
-					}
+				className='footer-tab',
 				)],
-		style={
-			'width': '100%',
-			# 'text-align': 'center',
-			},
 		)
 def airnow_select():
 	return html.Div([
@@ -117,41 +91,24 @@ def airnow_select():
 			display_format='MMM Do, YYYY',
 			),
 		html.Hr(style={'margin': '10px 10px'}),
-		# html.Div(id='specs-pandas'),
 		html.Div([
 			html.Button(id='submit-button-state', n_clicks=0, 
 			children='CHART',
 			title='Refesh and chart data',
-				style={
-					'font-size': '16px',
-					'background-color': 'gray',
-					'color': 'maroon',
-					'padding': '5px 20px 20px 20px',
-				}),
+			className='btn-style'),
 			],
 			style={
 				'align-items': 'center',
 			}),
-		],
-		style={
-		'width': '100%',
-		})
+		],)
 
 def generate_input():
 	return 	html.Div(
 		children=[
 			airnow_select(),
-			# generate_tab(head_str='First-First Tab'),
 			],
-		style={
-			'width': '50%',
-			'height': '90%',
-			# 'border': 'solid blue 1px',
-			'display': 'flex',
-			'align-items': 'flex-start',
-			'flex-direction': 'column',
-			'padding': '5px 5px',
-		})
+		className = 'input-tab',
+		)
 
 def summary_tab():
 	return html.Div(
@@ -159,31 +116,23 @@ def summary_tab():
 			dcc.Graph(id='pie-graph'),
 			dcc.Graph(id='hist-graph'),
 			],
-		style={
-			'display': 'flex',
-			'align-items': 'flex-start',
-			})
+		className='flex-tab',
+	)
+
 def graph_tab():
 	return html.Div(
 		children=[
 			dcc.Graph(id='pandas-graphic'),
 			dcc.Graph(id='pandas-graphic-daily'),
 			],
-		style={
-			'display': 'flex',
-			'align-items': 'flex-start',
-		})
+		className='flex-tab',)
 
 
 app.layout = html.Div(
 	id='big-app-container',
 	children=[
 		generate_header(),
-		html.Div(
-			style={
-			'width': '100%',
-			'border': 'solid white 1px',
-			}),
+		html.Div(className='hz-line'),
 		html.Div([
 			generate_input(),
 			html.Div(
@@ -192,35 +141,18 @@ app.layout = html.Div(
 					graph_tab(),
 					summary_tab(),
 					],
-				style={
-					'display': 'flex',
-					'flex-direction': 'column',
-					'justify-content': 'space-between',
-					}),
+				className='chart-tab'),
 			],
 			style={
 				'display': 'flex',
 				'flex-direction': 'row',
-				# 'flex-wrap': 'wrap',
-				# 'justify-content': 'space-between',
-				# 'border': 'solid purple 1px',
 				}
 
 			),
 		html.Div(
-			id='hl-near-bottom',
-			style={
-				'width': '100%',
-				'border': 'solid gray 1px',
-				# 'display': 'flex',
-				# 'flex-direction': 'row',
-				}),
+			className='hz-line'),
 		generate_footer(),
-		],
-	style={
-		'border': 'solid white 1px',
-		}
-	)
+		],)
 
 
 @app.callback(
