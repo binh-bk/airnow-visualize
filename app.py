@@ -1,4 +1,7 @@
-import datetime
+# Binh Nguyen, July 2020
+# Visualize archieved data in airnow.gov
+# Dash, Plotly, Python, Gunicorn
+
 from urllib.request import urlopen
 import json
 import pandas as pd 
@@ -7,6 +10,8 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_html_components as html 
 from dash.dependencies import Input, Output, State
+import dash_daq as daq
+
 import plotly.express as px 
 import plotly.io as pio
 from datetime import datetime as dt
@@ -66,7 +71,14 @@ def airnow_select():
 		value='Hanoi',
 		),
 		dcc.RadioItems(id='select_file'),
-		html.H5('File info'),
+		html.H5('Refesh local file'),
+		daq.BooleanSwitch(
+  			id='file_refesh',
+  			on=False,
+			color="#790604",
+			theme='dark',
+			persisted_props =['No', 'Yes'],
+		),
 		html.Link(
 			id='target_file', 
 			children=[html.P('Link')],
@@ -83,11 +95,11 @@ def airnow_select():
 	    html.Label('Select Date Range'),
 		dcc.DatePickerRange(
 			id='date-picker',
-			min_date_allowed = datetime.date(2015,1,1),
-			max_date_allowed = datetime.date(2020,7,30),
-			initial_visible_month=datetime.date(2020, 3, 1),
-			start_date = datetime.date(2019,1,1),
-			end_date = datetime.date(2020,1,1),
+			min_date_allowed = dt(2015,1,1),
+			max_date_allowed = dt(2020,7,30),
+			initial_visible_month=dt(2020, 3, 1),
+			start_date = dt(2019,1,1),
+			end_date = dt(2020,1,1),
 			display_format='MMM Do, YYYY',
 			),
 		html.Hr(style={'margin': '10px 10px'}),
@@ -181,13 +193,14 @@ def select_csv(selected_city, target_csv):
 	[Output('date-picker', 'start_date'),
 	Output('date-picker', 'end_date'),
 	Output('quality-tags', 'options')],
-	[Input('target_file', 'href')]
+	[Input('target_file', 'href'),
+	Input('file_refesh', 'on')]
 	)
-def update_option(target_file):
+def update_option(target_file, file_refesh):
 	global dfraw
 	file = target_file.split('/')[-1]
 	print(f'Filename {file}')
-	if file not in os.listdir('csv/'):
+	if file not in os.listdir('csv/') or file_refesh:
 		dfraw = pd.read_csv(target_file, parse_dates=['Date (LT)'],
                 index_col=['Date (LT)'])
 		dfraw.to_csv(f'csv/{file}')
